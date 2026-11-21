@@ -1,0 +1,15 @@
+#!/bin/sh
+# Chess.com'un canlı arayüzünü normal tarayıcı profilinden ayrı tut.
+set -eu
+profile=${XDG_CONFIG_HOME:-"$HOME/.config"}/chess-com-desktop
+umask 077
+mkdir -p "$profile"
+for browser in chromium google-chrome-stable google-chrome chromium-browser brave-browser; do
+    if command -v "$browser" >/dev/null 2>&1; then
+        exec "$browser" --class=chess-com-desktop --name=chess-com-desktop \
+            --user-data-dir="$profile" --no-first-run --no-default-browser-check \
+            --app=https://www.chess.com/tr
+    fi
+done
+printf '%s\n' 'Chromium bulunamadı. Chromium, Google Chrome veya Brave kurup tekrar deneyin.' >&2
+exit 1
